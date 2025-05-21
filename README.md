@@ -19,7 +19,7 @@ This is a full-stack User Access Management system built with Node.js (Express) 
     * [Backend Setup](#backend-setup)
     * [Frontend Setup](#frontend-setup)
     * [Running the Application](#running-the-application)
-6.  [Evaluation Criteria](#6-evaluation-criteria)
+
 
 ## 1. Introduction
 
@@ -166,12 +166,3 @@ The system defines three primary user roles:
 3.  Start the frontend development server (from user-access-management/frontend).
 4.  Access the application in your web browser at http://localhost:3000.
 
-## 6. Evaluation Criteria
-The system will be evaluated based on the following criteria:
-
-* *Functionality:* Correct implementation of sign-up, login, request creation, and approval handling.
-* *Code Structure:* Modular, clean folder organization, and reusable components.
-* *Security:* Proper JWT handling and password encryption.
-* *DB Integration:* Correct database schema and relations implemented using TypeORM.
-* *Completeness:* All described features are functional and testable.
-*
