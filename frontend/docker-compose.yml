@@ -1,0 +1,29 @@
+# frontend/Dockerfile
+# Base image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the React app for production
+RUN npm run build
+
+# Serve the static files using a lightweight web server (e.g., Nginx or serve)
+# For development, you might not use this and just rely on 'npm start'
+# Here, we'll use 'serve' for demonstration, install it globally
+RUN npm install -g serve
+
+# Expose port
+EXPOSE 3000
+
+# Start the 'serve' command to serve the built React app
+CMD ["serve", "-s", "build"]

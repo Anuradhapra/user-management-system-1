@@ -1,0 +1,56 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-user_access_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Map container port 5432 to host port 5432
+
+  backend:
+    build:
+      context: ./backend # Build from the backend directory
+      dockerfile: Dockerfile # Specify the Dockerfile in backend/
+    restart: on-failure
+    environment:
+      DB_HOST: db # Connect to the 'db' service within Docker network
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: ${DB_NAME:-user_access_db}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key_change_this_for_production}
+      PORT: 5000
+    ports:
+      - "5000:5000" # Map container port 5000 to host port 5000
+    depends_on:
+      - db # Ensure db service starts before backend
+    volumes:
+      - ./backend:/app # Mount backend code for live reloading during dev
+      - /app/node_modules # Exclude node_modules from host mount to prevent issues
+
+  frontend:
+    build:
+      context: ./frontend # Build from the frontend directory
+      dockerfile: Dockerfile # Specify the Dockerfile in frontend/
+    restart: on-failure
+    ports:
+      - "3000:3000" # Map container port 3000 to host port 3000
+    volumes:
+      - ./frontend:/app # Mount frontend code for live reloading during dev
+      - /app/node_modules # Exclude node_modules from host mount
+    depends_on:
+      - backend # Frontend depends on backend being available (for API calls)
+    environment:
+      # React apps usually need REACT_APP_ prefix for env vars accessible in browser
+      REACT_APP_API_URL: http://localhost:5000 # Point frontend to backend API
+
+
+volumes:
+  pgdata:
